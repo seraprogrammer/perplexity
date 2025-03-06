@@ -47,7 +47,7 @@ const SearchBar = ({
       onSearch(query);
       setShowSuggestions(false);
       // Navigate to chat interface
-      navigate(`/chat?q=${encodeURIComponent(query)}`);
+      navigate(`/chat`);
     }
   };
 
@@ -56,7 +56,7 @@ const SearchBar = ({
     onSearch(suggestion);
     setShowSuggestions(false);
     // Navigate to chat interface
-    navigate(`/chat?q=${encodeURIComponent(suggestion)}`);
+    navigate(`/chat`);
   };
 
   const clearSearch = () => {

@@ -10,7 +10,7 @@ import {
   RefreshCw,
   Loader2,
 } from "lucide-react";
-import ReactMarkdown from "react-markdown";
+// ReactMarkdown removed to fix errors
 import { getGeminiAPI } from "../api/gemini";
 import ApiKeyModal from "../settings/ApiKeyModal";
 
@@ -28,13 +28,13 @@ const ChatInterface = ({ onSendMessage = () => {} }: ChatInterfaceProps) => {
     {
       role: "model",
       content:
-        "Hello! I'm powered by Google's Gemini AI. Ask me anything, and I'll do my best to help you.",
+        "Hello! I'm an AI assistant. Ask me anything, and I'll do my best to help you.",
     },
   ]);
 
   useEffect(() => {
     // Load API key from localStorage when component mounts
-    const savedApiKey = localStorage.getItem("gemini_api_key") || "";
+    const savedApiKey = localStorage.getItem("perplexity_api_key") || "";
     setApiKey(savedApiKey);
   }, []);
 
@@ -42,7 +42,7 @@ const ChatInterface = ({ onSendMessage = () => {} }: ChatInterfaceProps) => {
     e.preventDefault();
     if (!message.trim()) return;
     if (!apiKey) {
-      alert("Please set your Gemini API key first");
+      alert("Please set your API key first");
       return;
     }
 
@@ -54,9 +54,8 @@ const ChatInterface = ({ onSendMessage = () => {} }: ChatInterfaceProps) => {
     setIsLoading(true);
 
     try {
-      // Initialize Gemini API with the API key
-      const gemini = getGeminiAPI(apiKey);
-      const response = await gemini.sendMessage(message);
+      // Simulate API response instead of using Gemini
+      const response = `I'm simulating a response to your query: "${message}". This is a placeholder response since we're not using an external API.`;
 
       // Add AI response to conversation
       setConversation((prev) => [
@@ -64,7 +63,7 @@ const ChatInterface = ({ onSendMessage = () => {} }: ChatInterfaceProps) => {
         { role: "model", content: response },
       ]);
     } catch (error) {
-      console.error("Error getting response from Gemini:", error);
+      console.error("Error getting response from API:", error);
       setConversation((prev) => [
         ...prev,
         {
@@ -88,7 +87,7 @@ const ChatInterface = ({ onSendMessage = () => {} }: ChatInterfaceProps) => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-gradient-to-br from-black via-gray-900 to-green-900">
+    <div className="flex flex-col h-full bg-gradient-to-br from-black via-gray-900 to-gray-800">
       <div className="flex-1 overflow-auto p-4 backdrop-blur-sm">
         <div className="max-w-3xl mx-auto">
           {/* Messages */}
@@ -99,19 +98,23 @@ const ChatInterface = ({ onSendMessage = () => {} }: ChatInterfaceProps) => {
             >
               <div className="flex items-center mb-4">
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center mr-2 ${msg.role === "user" ? "bg-green-600" : "bg-emerald-800"}`}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center mr-2 ${msg.role === "user" ? "bg-blue-600" : "bg-gray-700"}`}
                 >
                   <span className="text-white font-bold">
-                    {msg.role === "user" ? "U" : "G"}
+                    {msg.role === "user" ? "U" : "A"}
                   </span>
                 </div>
-                <h2 className="text-lg font-medium text-green-400">
-                  {msg.role === "user" ? "You" : "Gemini"}
+                <h2 className="text-lg font-medium text-gray-300">
+                  {msg.role === "user" ? "You" : "AI Assistant"}
                 </h2>
               </div>
 
-              <div className="prose prose-invert prose-green max-w-none bg-black/30 p-4 rounded-lg border border-green-500/20 backdrop-blur-md shadow-lg shadow-green-900/20">
-                <ReactMarkdown>{msg.content}</ReactMarkdown>
+              <div className="bg-black/30 p-4 rounded-lg border border-gray-700 backdrop-blur-md shadow-lg shadow-black/20 text-white">
+                <div className="prose prose-invert max-w-none">
+                  {msg.content.split("\n").map((paragraph, i) => (
+                    <p key={i}>{paragraph}</p>
+                  ))}
+                </div>
               </div>
 
               {msg.role === "model" && (
@@ -119,7 +122,7 @@ const ChatInterface = ({ onSendMessage = () => {} }: ChatInterfaceProps) => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8 rounded-full text-green-400 hover:text-green-300 hover:bg-green-900/30"
+                    className="h-8 w-8 rounded-full text-blue-400 hover:text-blue-300 hover:bg-blue-900/30"
                     onClick={() => handleCopyMessage(msg.content)}
                   >
                     <Copy className="h-4 w-4" />
@@ -127,14 +130,14 @@ const ChatInterface = ({ onSendMessage = () => {} }: ChatInterfaceProps) => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8 rounded-full text-green-400 hover:text-green-300 hover:bg-green-900/30"
+                    className="h-8 w-8 rounded-full text-blue-400 hover:text-blue-300 hover:bg-blue-900/30"
                   >
                     <ThumbsUp className="h-4 w-4" />
                   </Button>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8 rounded-full text-green-400 hover:text-green-300 hover:bg-green-900/30"
+                    className="h-8 w-8 rounded-full text-blue-400 hover:text-blue-300 hover:bg-blue-900/30"
                   >
                     <ThumbsDown className="h-4 w-4" />
                   </Button>
@@ -147,9 +150,9 @@ const ChatInterface = ({ onSendMessage = () => {} }: ChatInterfaceProps) => {
           {isLoading && (
             <div className="flex justify-center items-center py-4">
               <div className="animate-pulse flex space-x-2">
-                <div className="h-2 w-2 bg-green-400 rounded-full"></div>
-                <div className="h-2 w-2 bg-green-400 rounded-full animation-delay-200"></div>
-                <div className="h-2 w-2 bg-green-400 rounded-full animation-delay-400"></div>
+                <div className="h-2 w-2 bg-blue-400 rounded-full"></div>
+                <div className="h-2 w-2 bg-blue-400 rounded-full animation-delay-200"></div>
+                <div className="h-2 w-2 bg-blue-400 rounded-full animation-delay-400"></div>
               </div>
             </div>
           )}
@@ -157,7 +160,7 @@ const ChatInterface = ({ onSendMessage = () => {} }: ChatInterfaceProps) => {
       </div>
 
       {/* Input area */}
-      <div className="border-t border-green-900/50 p-4 backdrop-blur-md bg-black/40">
+      <div className="border-t border-gray-800 p-4 backdrop-blur-md bg-black/40">
         <div className="max-w-3xl mx-auto flex items-center">
           <ApiKeyModal onSave={handleApiKeySave} initialApiKey={apiKey} />
 
@@ -167,14 +170,14 @@ const ChatInterface = ({ onSendMessage = () => {} }: ChatInterfaceProps) => {
                 type="text"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="Ask Gemini..."
-                className="pr-10 py-6 h-12 text-base rounded-full border-2 border-green-500/30 bg-black/50 text-white focus:border-green-400 placeholder:text-gray-500"
+                placeholder="Ask a question..."
+                className="pr-10 py-6 h-12 text-base rounded-full border-2 border-gray-700 bg-black/50 text-white focus:border-blue-500 placeholder:text-gray-500"
               />
               <div className="absolute right-3">
                 <Button
                   type="submit"
                   size="icon"
-                  className="rounded-full bg-green-600 hover:bg-green-700 text-white h-8 w-8 shadow-md shadow-green-900/50"
+                  className="rounded-full bg-blue-600 hover:bg-blue-700 text-white h-8 w-8 shadow-md shadow-black/50"
                   disabled={!message.trim() || isLoading}
                 >
                   {isLoading ? (
@@ -203,9 +206,9 @@ const ChatInterface = ({ onSendMessage = () => {} }: ChatInterfaceProps) => {
         </div>
 
         {!apiKey && (
-          <div className="max-w-3xl mx-auto mt-2 text-xs text-green-400 text-center">
-            Please set your Gemini API key using the settings button to enable
-            AI responses
+          <div className="max-w-3xl mx-auto mt-2 text-xs text-blue-400 text-center">
+            Please set your API key using the settings button to enable AI
+            responses
           </div>
         )}
       </div>

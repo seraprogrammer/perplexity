@@ -31,7 +31,6 @@ export class GeminiAPI {
       topP: config.topP || 0.95,
       topK: config.topK || 40,
       maxOutputTokens: config.maxOutputTokens || 8192,
-      responseMimeType: config.responseMimeType || "text/plain",
     };
     this.history = [];
   }

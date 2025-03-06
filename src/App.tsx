@@ -8,16 +8,15 @@ const ChatLayout = lazy(() => import("./components/layout/ChatLayout"));
 function App() {
   return (
     <Suspense fallback={<p>Loading...</p>}>
-      <>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/chat" element={<ChatLayout />} />
-          {import.meta.env.VITE_TEMPO === "true" && (
-            <Route path="/tempobook/*" />
-          )}
-        </Routes>
-        {import.meta.env.VITE_TEMPO === "true" && useRoutes(routes)}
-      </>
+      {import.meta.env.VITE_TEMPO === "true" && useRoutes(routes)}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/chat" element={<ChatLayout />} />
+        <Route path="/chat/:query" element={<ChatLayout />} />
+        {import.meta.env.VITE_TEMPO === "true" && (
+          <Route path="/tempobook/*" element={<div />} />
+        )}
+      </Routes>
     </Suspense>
   );
 }
